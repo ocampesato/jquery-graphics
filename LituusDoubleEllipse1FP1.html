@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+     "http://www.w3.org/TR/html4/strict.dtd"> 
+<html> 
+
+<head> 
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"> 
+<title>jQuery Lituus Graphics</title> 
+<style type="text/css"> 
+@import "css/jquery.svg.css";
+ 
+#svgcanvas { width: 800px; height: 500px; border: 0px solid #484; }
+</style> 
+
+<script type="text/javascript" src="js/jquery-1.3.2.js"></script> 
+<script type="text/javascript" src="js/jquery.svg.js"></script> 
+
+<script type="text/javascript"> 
+$(function() {
+   $('#svgcanvas').svg({onLoad: drawGraphics});
+});
+ 
+  var basePointX  = 350;
+  var basePointY  = 250;
+  var fixedPointX = 700;
+  var fixedPointY = 100;
+  var currentX    = 0;
+  var currentY    = 0;
+  var offsetX     = 0;
+  var offsetY     = 0;
+  var radius      = 0;
+  var Constant    = 200;
+  var angle       = 0;
+  var deltaAngle  = 1;
+  var maxAngle    = 721;
+  var majorAxis   = 80;
+  var minorAxis   = 40;
+
+function drawGraphics(svg) {
+  for(angle=1; angle<maxAngle; angle+=deltaAngle) {
+     radius   = Constant*Constant/angle;
+     offsetX  = radius*Math.cos(angle*Math.PI/180);
+     offsetY  = radius*Math.sin(angle*Math.PI/180);
+     currentX = basePointX+offsetX;
+     currentY = basePointY-offsetY;
+
+     // alternate between red and blue
+     if((Math.floor(angle/deltaAngle)) % 2 == 0) {
+        fillColor = "red";
+     }
+     else {
+        fillColor = "blue";
+     }
+
+     svg.ellipse(currentX, currentY, 
+                 majorAxis, minorAxis,
+                 {fill: fillColor, stroke: 'none', 'stroke-width': 0});
+
+     svg.ellipse(currentX+majorAxis, currentY+minorAxis, 
+                 majorAxis, minorAxis,
+                 {fill: fillColor, stroke: 'none', 'stroke-width': 0});
+
+     svg.line(fixedPointX, fixedPointY,
+              currentX,    currentY, 
+              {stroke: fillColor, 'stroke-width': 1});
+   }
+}
+</script> 
+</head> 
+
+<body> 
+<div id="svgcanvas"></div> 
+</body> 
+</html> 
